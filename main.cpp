@@ -1,15 +1,15 @@
+#include <array>
 #include <cmath>
 #include <fstream>
 #include <iostream>
-#include <vector>
 
 using namespace std;
 
 const double A = 1.0;
-const double B = 1.5;
+const double B = 3.0;
 
 // функция, описывающая систему Брюсселятора
-void brusselator(double t, const std::vector<double> &z, std::vector<double> &dzdt) {
+void brusselator(double t, const array<double, 2> &z, array<double, 2> &dzdt) {
     double x = z[0];
     double y = z[1];
 
@@ -18,8 +18,8 @@ void brusselator(double t, const std::vector<double> &z, std::vector<double> &dz
 }
 
 // метод Рунге-Кутты 4-го порядка
-void rungeKutta4(double t, double h, std::vector<double> &z) {
-    std::vector<double> k1(2), k2(2), k3(2), k4(2), z_temp(2);
+void rungeKutta4(double t, double h, array<double, 2> &z) {
+    array<double, 2> k1, k2, k3, k4, z_temp;
 
     // вычисление k1
     brusselator(t, z, k1);
@@ -49,54 +49,54 @@ void rungeKutta4(double t, double h, std::vector<double> &z) {
 }
 
 // метод Дорманда-Принса 5-го порядка
-void dormandPrince5(double t, double &h, vector<double> &z, double tolerance) {
-    std::vector<double> k1(2), k2(2), k3(2), k4(2), k5(2), k6(2), k7(2), z_temp(2);
+void dormandPrince5(double t, double &h, array<double, 2> &z, double tolerance) {
+    array<double, 2> k1, k2, k3, k4, k5, k6, k7, z_temp;
 
     // коэффициенты метода
-    const double a2 = 1.0 / 5.0;
-    const double a3 = 3.0 / 10.0;
-    const double a4 = 4.0 / 5.0;
-    const double a5 = 8.0 / 9.0;
-    const double a6 = 1.0;
-    const double a7 = 1.0;
+    static const double a2 = 1.0 / 5.0;
+    static const double a3 = 3.0 / 10.0;
+    static const double a4 = 4.0 / 5.0;
+    static const double a5 = 8.0 / 9.0;
+    static const double a6 = 1.0;
+    static const double a7 = 1.0;
 
-    const double b21 = 1.0 / 5.0;
-    const double b31 = 3.0 / 40.0;
-    const double b32 = 9.0 / 40.0;
-    const double b41 = 44.0 / 45.0;
-    const double b42 = -56.0 / 15.0;
-    const double b43 = 32.0 / 9.0;
-    const double b51 = 19372.0 / 6561.0;
-    const double b52 = -25360.0 / 2187.0;
-    const double b53 = 64448.0 / 6561.0;
-    const double b54 = -212.0 / 729.0;
-    const double b61 = 9017.0 / 3168.0;
-    const double b62 = -355.0 / 33.0;
-    const double b63 = 46732.0 / 5247.0;
-    const double b64 = 49.0 / 176.0;
-    const double b65 = -5103.0 / 18656.0;
-    const double b71 = 35.0 / 384.0;
-    const double b72 = 0.0;
-    const double b73 = 500.0 / 1113.0;
-    const double b74 = 125.0 / 192.0;
-    const double b75 = -2187.0 / 6784.0;
-    const double b76 = 11.0 / 84.0;
+    static const double b21 = 1.0 / 5.0;
+    static const double b31 = 3.0 / 40.0;
+    static const double b32 = 9.0 / 40.0;
+    static const double b41 = 44.0 / 45.0;
+    static const double b42 = -56.0 / 15.0;
+    static const double b43 = 32.0 / 9.0;
+    static const double b51 = 19372.0 / 6561.0;
+    static const double b52 = -25360.0 / 2187.0;
+    static const double b53 = 64448.0 / 6561.0;
+    static const double b54 = -212.0 / 729.0;
+    static const double b61 = 9017.0 / 3168.0;
+    static const double b62 = -355.0 / 33.0;
+    static const double b63 = 46732.0 / 5247.0;
+    static const double b64 = 49.0 / 176.0;
+    static const double b65 = -5103.0 / 18656.0;
+    static const double b71 = 35.0 / 384.0;
+    static const double b72 = 0.0;
+    static const double b73 = 500.0 / 1113.0;
+    static const double b74 = 125.0 / 192.0;
+    static const double b75 = -2187.0 / 6784.0;
+    static const double b76 = 11.0 / 84.0;
 
-    const double c1 = 35.0 / 384.0;
-    const double c2 = 0.0;
-    const double c3 = 500.0 / 1113.0;
-    const double c4 = 125.0 / 192.0;
-    const double c5 = -2187.0 / 6784.0;
-    const double c6 = 11.0 / 84.0;
-    const double c7 = 0.0;
+    static const double c1 = 35.0 / 384.0;
+    static const double c2 = 0.0;
+    static const double c3 = 500.0 / 1113.0;
+    static const double c4 = 125.0 / 192.0;
+    static const double c5 = -2187.0 / 6784.0;
+    static const double c6 = 11.0 / 84.0;
+    static const double c7 = 0.0;
 
-    const double d1 = 5179.0 / 57600.0;
-    const double d2 = 0.0;
-    const double d3 = 7571.0 / 16695.0;
-    const double d4 = 393.0 / 640.0;
-    const double d5 = -92097.0 / 339200.0;
-    const double d6 = 187.0 / 2100.0;
-    const double d7 = 1.0 / 40.0;
+    static const double d1 = 5179.0 / 57600.0;
+    static const double d2 = 0.0;
+    static const double d3 = 7571.0 / 16695.0;
+    static const double d4 = 393.0 / 640.0;
+    static const double d5 = -92097.0 / 339200.0;
+    static const double d6 = 187.0 / 2100.0;
+    static const double d7 = 1.0 / 40.0;
 
     // вычисление k1
     brusselator(t, z, k1);
@@ -162,7 +162,7 @@ void dormandPrince5(double t, double &h, vector<double> &z, double tolerance) {
     }
 }
 
-void writeErrorToFile1(const vector<double> &z1, const vector<double> &z2, double time,
+void writeErrorToFile1(const array<double, 2> &z1, const array<double, 2> &z2, double time,
                        ofstream &file) {
     double error_x = fabs(z1[0] - z2[0]);
     double error_y = fabs(z1[1] - z2[1]);
@@ -170,7 +170,7 @@ void writeErrorToFile1(const vector<double> &z1, const vector<double> &z2, doubl
     file << time << "\t" << error_x << "\t" << error_y << "\n";
 }
 
-void writeErrorToFile2(const vector<double> &z1, const vector<double> &z2, double time,
+void writeErrorToFile2(const array<double, 2> &z1, const array<double, 2> &z2, double time,
                        ofstream &file) {
     double error_x = fabs(z1[0] - z2[0]) / fabs(z2[0]);
     double error_y = fabs(z1[1] - z2[1]) / fabs(z2[1]);
@@ -181,7 +181,7 @@ void writeErrorToFile2(const vector<double> &z1, const vector<double> &z2, doubl
 void calculateTotalError(const string &filename) {
     ifstream file(filename);
     if (!file.is_open()) {
-        std::cerr << "Error opening file!\n";
+        cerr << "Error opening file!\n";
         return;
     }
 
@@ -195,15 +195,15 @@ void calculateTotalError(const string &filename) {
 
     file.close();
 
-    std::cout << "Total error for file " << filename << ":\n";
-    std::cout << "Error on x: " << total_error_x << "\n";
-    std::cout << "Error on y: " << total_error_y << "\n";
+    cout << "Total error for file " << filename << ":\n";
+    cout << "Error on x: " << total_error_x << "\n";
+    cout << "Error on y: " << total_error_y << "\n";
 }
 
 int main() {
     // начальные условия
-    vector<double> z1 = {1.0, 1.0}; // x(0) = 1.0, y(0) = 1.0
-    vector<double> z2 = {1.0, 1.0}; // x(0) = 1.0, y(0) = 1.0
+    array<double, 2> z1 = {1.0, 1.0}; // x(0) = 1.0, y(0) = 1.0
+    array<double, 2> z2 = {1.0, 1.0}; // x(0) = 1.0, y(0) = 1.0
 
     // временные параметры
     double t = 0.0;
